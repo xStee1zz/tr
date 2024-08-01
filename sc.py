@@ -4,69 +4,63 @@ import threading
 import requests
 
 with open('bot.txt', 'r') as file:
-    bots = file.readlines()
+    bot_list = file.readlines()
 
-def like():
+with open('proxy.txt', 'r') as file:
+    proxy_list = file.readlines()
+
+def fspam():
     while True:
-        bot = random.choice(bots).strip()
+        bot = random.choice(bot_list).strip()
         bot_id, bot_token = bot.split(':')
 
-        url = "https://gw.sandboxol.com/friend/api/v1/friends"
+        url = "http://modsgs.sandboxol.com/friend/api/v1/family/recruit"
 
         headers = {
             'userId': bot_id,
             'Access-Token': bot_token,
+            'packageName': 'amosCraft',
+            'User-Agent': 'okhttp/3.12.1'
+        }
+
+        proxies = {
+            'http': random.choice(proxy_list).strip()
+        }
+
+        try:
+            response = requests.delete(url, headers=headers, proxies=proxies)
+        except:
+            continue
+
+        headers = {
+            'userId': bot_id,
+            'Access-Token': bot_token,
+            'packageName': 'amosCraft',
+            'appVersion': '5062',
+            'userLanguage': 'ru_RU',
             'User-Agent': 'okhttp/3.12.1'
         }
 
         data = {
-            'friendId': 65980143,
-            'msg': ''
+            'age': 200,
+            'memberType': random.randint(1, 4),
+            'ownerType': random.randint(1, 4)
         }
 
-        response = requests.post(url, headers=headers, json=data)
-
-        url = "http://modsgs.sandboxol.com/friend/api/v1/friends/requests/approve-all"
-
-        headers = {
-            'userId': '65980143',
-            'Access-Token': 'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI2NTk4MDE0MyIsImlhdCI6MTcyMjM2MjY2NSwic3ViIjoiMjAyNDA3MzAgMTgwNDI1ODI4IiwiaXNzIjoiU2FuZGJveC1TZWN1cml0eS1CYXNpYyIsImV4cCI6MTcyMjk2NzQ2NX0.8f4OFu535pHBtW_nYH1wXCA6GAct_554FwX8Ub3pxxQ',
-            'packageName': 'amosCraft',
-            'User-Agent': 'okhttp/3.12.1'
+        proxies = {
+            'http': random.choice(proxy_list).strip()
         }
 
-        response = requests.post(url, headers=headers)
+        try:
+            response = requests.post(url, headers=headers, json=data, proxies=proxies).json()
+        except:
+            continue
 
-        url = "http://modsgs.sandboxol.com/friend/api/v1/popularity?friendId=65980143"
-
-        headers = {
-            'userId': bot_id,
-            'Access-Token': bot_token,
-            'packageName': 'amosCraft',
-            'User-Agent': 'okhttp/3.12.1'
-        }
-
-        response = requests.post(url, headers=headers).json()
-        message = response['message']
-
-        if message == "SUCCESS":
-            print(f"\033[1m\033[32m{response['data']}\033[0m")
-        else:
-            print(f"\033[1m\033[31m{message}\033[0m")
-
-        url = "https://gw.sandboxol.com/friend/api/v1/friends?friendId=65980143"
-
-        headers = {
-            'userId': bot_id,
-            'Access-Token': bot_token,
-            'User-Agent': 'okhttp/3.12.1'
-        }
-
-        response = requests.delete(url, headers=headers)
+        print(response['message'])
 
 threads = []
-for _ in range(3):
-    t = threading.Thread(target=like)
+for _ in range(500):
+    t = threading.Thread(target=fspam)
     threads.append(t)
     t.start()
 
