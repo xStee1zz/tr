@@ -6,9 +6,6 @@ import requests
 with open('bot.txt', 'r') as file:
     bot_list = file.readlines()
 
-with open('proxy.txt', 'r') as file:
-    proxy_list = file.readlines()
-
 def fspam():
     while True:
         bot = random.choice(bot_list).strip()
@@ -23,14 +20,7 @@ def fspam():
             'User-Agent': 'okhttp/3.12.1'
         }
 
-        proxies = {
-            'http': random.choice(proxy_list).strip()
-        }
-
-        try:
-            response = requests.delete(url, headers=headers, proxies=proxies)
-        except:
-            continue
+        response = requests.delete(url, headers=headers)
 
         headers = {
             'userId': bot_id,
@@ -47,15 +37,7 @@ def fspam():
             'ownerType': random.randint(1, 4)
         }
 
-        proxies = {
-            'http': random.choice(proxy_list).strip()
-        }
-
-        try:
-            response = requests.post(url, headers=headers, json=data, proxies=proxies).json()
-        except:
-            continue
-
+        response = requests.post(url, headers=headers, json=data).json()
         print(response['message'])
 
 threads = []
